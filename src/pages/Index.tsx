@@ -6,13 +6,15 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { IndianRupee, LucidePhone, Mail, Phone, User } from "lucide-react";
+import { IndianRupee, LucidePhone, Mail, Phone, User, UserRoundPlus } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { LoginForm } from "@/components/LoginForm";
 import { RegisterForm } from "@/components/RegisterForm";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const Index = () => {
+  const [activeTab, setActiveTab] = useState("login");
+  
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* UPI ID Banner */}
@@ -38,9 +40,13 @@ const Index = () => {
                 Keep track of customer credits in one place. Simple, secure, and designed for your business.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Button size="lg" className="gap-2">
+                <Button size="lg" className="gap-2" onClick={() => setActiveTab("login")}>
                   <IndianRupee size={18} />
                   Start Managing Credits
+                </Button>
+                <Button size="lg" variant="outline" className="gap-2" onClick={() => setActiveTab("register")}>
+                  <UserRoundPlus size={18} />
+                  Register New Shop
                 </Button>
               </div>
               
@@ -78,7 +84,7 @@ const Index = () => {
             </div>
             
             <div className="lg:mx-auto w-full max-w-md">
-              <AuthTabs />
+              <AuthTabs activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>
           </div>
         </div>
@@ -89,9 +95,9 @@ const Index = () => {
   );
 };
 
-const AuthTabs = () => {
+const AuthTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActiveTab: (tab: string) => void }) => {
   return (
-    <Tabs defaultValue="login" className="w-full">
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
       <TabsList className="grid w-full grid-cols-2 mb-4">
         <TabsTrigger value="login">Login</TabsTrigger>
         <TabsTrigger value="register">Register Shop</TabsTrigger>
@@ -112,14 +118,17 @@ const AuthTabs = () => {
       </TabsContent>
       
       <TabsContent value="register" className="space-y-4 animate-fade-in">
-        <Card className="border-2">
-          <CardHeader>
-            <CardTitle>Register Your Shop</CardTitle>
+        <Card className="border-2 border-primary/20">
+          <CardHeader className="bg-primary/5">
+            <CardTitle className="flex items-center gap-2">
+              <UserRoundPlus className="h-5 w-5" />
+              Register Your Shop
+            </CardTitle>
             <CardDescription>
               Create an account to manage your customer credits
             </CardDescription>
           </CardHeader>
-          <CardContent className="overflow-hidden">
+          <CardContent className="overflow-hidden pt-4">
             <ScrollArea className="h-full max-h-[350px] pr-4">
               <RegisterForm />
             </ScrollArea>

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Building2, Mail, Loader2, Lock, Eye, EyeOff, Phone } from "lucide-react";
+import { Building2, Mail, Loader2, Lock, Eye, EyeOff, Phone, UserRoundPlus } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -26,6 +26,11 @@ export function RegisterForm() {
     
     if (password !== confirmPassword) {
       toast.error("Passwords do not match");
+      return;
+    }
+    
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters");
       return;
     }
     
@@ -155,6 +160,7 @@ export function RegisterForm() {
       <Button type="submit" className="w-full" disabled={loading}>
         {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         {loading ? "Registering..." : "Register Shop"}
+        {!loading && <UserRoundPlus className="ml-2 h-4 w-4" />}
       </Button>
     </form>
   );
