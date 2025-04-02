@@ -9,9 +9,10 @@ import { Footer } from "./Footer";
 
 interface DashboardLayoutProps {
   children: ReactNode;
+  onSignOut?: () => Promise<void>;
 }
 
-export function DashboardLayout({ children }: DashboardLayoutProps) {
+export function DashboardLayout({ children, onSignOut }: DashboardLayoutProps) {
   const [shopName, setShopName] = useState(() => {
     const user = localStorage.getItem("creditkeep_user");
     if (user) {
@@ -22,10 +23,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   
   const navigate = useNavigate();
   
-  const handleLogout = () => {
-    localStorage.removeItem("creditkeep_user");
-    toast.success("Logged out successfully");
-    navigate("/");
+  const handleLogout = async () => {
+    if (onSignOut) {
+      await onSignOut();
+    } else {
+      localStorage.removeItem("creditkeep_user");
+      toast.success("Logged out successfully");
+      navigate("/");
+    }
   };
 
   return (

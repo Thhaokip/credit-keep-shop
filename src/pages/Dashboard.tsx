@@ -100,18 +100,20 @@ const Dashboard = () => {
         throw error;
       }
       
-      const newCustomer: CustomerType = {
-        id: data.id,
-        name: data.name,
-        phone: data.phone || '',
-        address: data.address || '',
-        amount: Number(data.credit_amount),
-        notes: data.notes || '',
-        lastUpdated: data.updated_at,
-      };
-      
-      setCustomers(prev => [...prev, newCustomer]);
-      toast.success('Customer added successfully');
+      if (data) {
+        const newCustomer: CustomerType = {
+          id: data.id,
+          name: data.name,
+          phone: data.phone || '',
+          address: data.address || '',
+          amount: Number(data.credit_amount),
+          notes: data.notes || '',
+          lastUpdated: data.updated_at,
+        };
+        
+        setCustomers(prev => [...prev, newCustomer]);
+        toast.success('Customer added successfully');
+      }
     } catch (error: any) {
       console.error('Error adding customer:', error);
       toast.error('Failed to add customer');
