@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Building2, Mail, Loader2, Lock, Eye, EyeOff, Phone, UserRoundPlus } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 export function RegisterForm() {
   const [shopName, setShopName] = useState("");
@@ -15,6 +16,7 @@ export function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,11 +55,20 @@ export function RegisterForm() {
       }
       
       toast.success("Registration successful! You can now login with your credentials.");
-      setShopName("");
-      setEmail("");
-      setPhone("");
-      setPassword("");
-      setConfirmPassword("");
+      
+      // Check if email verification is required
+      if (data?.user && data.session) {
+        // If session exists, user is already logged in (email verification not required)
+        toast.success("Registration complete! Redirecting to dashboard...");
+        setTimeout(() => navigate('/dashboard'), 1500);
+      } else {
+        // Clear the form
+        setShopName("");
+        setEmail("");
+        setPhone("");
+        setPassword("");
+        setConfirmPassword("");
+      }
     } catch (error: any) {
       console.error("Registration failed", error);
       toast.error(error.message || "Registration failed. Please try again.");
@@ -125,6 +136,7 @@ export function RegisterForm() {
             onChange={(e) => setPassword(e.target.value)}
             className="pl-10"
             required
+            minLength={6}
           />
           <Button
             type="button"
@@ -153,11 +165,16 @@ export function RegisterForm() {
             onChange={(e) => setConfirmPassword(e.target.value)}
             className="pl-10"
             required
+            minLength={6}
           />
         </div>
       </div>
       
-      <Button type="submit" className="w-full" disabled={loading}>
+      <Button 
+        type="submit" 
+        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-colors" 
+        disabled={loading}
+      >
         {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         {loading ? "Registering..." : "Register Shop"}
         {!loading && <UserRoundPlus className="ml-2 h-4 w-4" />}
