@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Mail, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ResetPasswordDialogProps {
   open: boolean;
@@ -26,16 +27,21 @@ export function ResetPasswordDialog({ open, onOpenChange }: ResetPasswordDialogP
     
     try {
       setLoading(true);
-      // In a real implementation, this would connect to Google Sheets API and send email
-      // For now, we'll just simulate a success for demonstration
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin,
+      });
+      
+      if (error) {
+        throw error;
+      }
       
       toast.success("Password reset link sent to your email!");
       onOpenChange(false);
       setEmail("");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Password reset failed", error);
-      toast.error("Failed to send reset link. Please try again.");
+      toast.error(error.message || "Failed to send reset link. Please try again.");
     } finally {
       setLoading(false);
     }

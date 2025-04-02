@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Mail, Loader2, Lock, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { ResetPasswordDialog } from "@/components/ResetPasswordDialog";
+import { supabase } from "@/integrations/supabase/client";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
@@ -26,18 +27,21 @@ export function LoginForm() {
     
     try {
       setLoading(true);
-      // In a real implementation, this would connect to Google Sheets API
-      // For now, we'll just simulate a success for demonstration
-      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Store user info in localStorage (would be JWT tokens in a real app)
-      localStorage.setItem('creditkeep_user', JSON.stringify({ email, shopName: email.split('@')[0] }));
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      
+      if (error) {
+        throw error;
+      }
       
       toast.success("Login successful!");
       navigate("/dashboard");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Login failed", error);
-      toast.error("Login failed. Please check your credentials.");
+      toast.error(error.message || "Login failed. Please check your credentials.");
     } finally {
       setLoading(false);
     }

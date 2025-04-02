@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Building2, Mail, Loader2, Lock, Eye, EyeOff, Phone } from "lucide-react";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 export function RegisterForm() {
   const [shopName, setShopName] = useState("");
@@ -15,13 +15,12 @@ export function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!shopName || !email || !phone || !password || !confirmPassword) {
-      toast.error("Please fill in all fields");
+    if (!shopName || !email || !password || !confirmPassword) {
+      toast.error("Please fill in all required fields");
       return;
     }
     
@@ -32,9 +31,21 @@ export function RegisterForm() {
     
     try {
       setLoading(true);
-      // In a real implementation, this would connect to Google Sheets API
-      // For now, we'll just simulate a success for demonstration
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            shop_name: shopName,
+            phone: phone || null,
+          },
+        },
+      });
+      
+      if (error) {
+        throw error;
+      }
       
       toast.success("Registration successful! You can now login with your credentials.");
       setShopName("");
@@ -42,9 +53,9 @@ export function RegisterForm() {
       setPhone("");
       setPassword("");
       setConfirmPassword("");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Registration failed", error);
-      toast.error("Registration failed. Please try again.");
+      toast.error(error.message || "Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -94,7 +105,6 @@ export function RegisterForm() {
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             className="pl-10"
-            required
           />
         </div>
       </div>
