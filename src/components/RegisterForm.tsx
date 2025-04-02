@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -172,13 +171,18 @@ export function RegisterForm() {
       
       <Button 
         type="submit" 
-        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-colors" 
+        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-colors font-semibold text-base py-6"
         disabled={loading}
+        size="lg"
       >
-        {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        {loading ? "Registering..." : "Register Shop"}
-        {!loading && <UserRoundPlus className="ml-2 h-4 w-4" />}
+        {loading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+        {loading ? "Registering..." : "Submit Registration"}
+        {!loading && <UserRoundPlus className="ml-2 h-5 w-5" />}
       </Button>
+      
+      <p className="text-xs text-center text-muted-foreground mt-2">
+        By registering, you agree to our Terms of Service and Privacy Policy.
+      </p>
     </form>
   );
 }
