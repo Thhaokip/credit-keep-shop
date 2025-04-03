@@ -31,7 +31,7 @@ const Index = () => {
       {/* Hero Section */}
       <section className="section-padding flex flex-col flex-grow">
         <div className="container max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
             <div className="space-y-6 animate-fade-in">
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground">
                 Manage Your Store Credits <span className="text-primary">Effortlessly</span>
@@ -119,19 +119,17 @@ const AuthTabs = ({ activeTab, setActiveTab }: { activeTab: string; setActiveTab
       
       <TabsContent value="register" className="space-y-4 animate-fade-in">
         <Card className="border-2 border-primary/20">
-          <CardHeader className="bg-primary/5">
-            <CardTitle className="flex items-center gap-2">
-              <UserRoundPlus className="h-5 w-5" />
+          <CardHeader className="bg-primary/5 py-4">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <UserRoundPlus className="h-4 w-4" />
               Register Your Shop
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-xs">
               Create an account to manage your customer credits
             </CardDescription>
           </CardHeader>
-          <CardContent className="overflow-hidden pt-4">
-            <ScrollArea className="h-full max-h-[350px] pr-4">
-              <RegisterForm />
-            </ScrollArea>
+          <CardContent className="pt-3 pb-4">
+            <RegisterForm />
           </CardContent>
         </Card>
       </TabsContent>

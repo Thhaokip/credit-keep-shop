@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -77,9 +78,9 @@ export function RegisterForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="shopName">Shop Name</Label>
+    <form onSubmit={handleSubmit} className="space-y-3">
+      <div className="space-y-1">
+        <Label htmlFor="shopName" className="text-sm">Shop Name</Label>
         <div className="relative">
           <Building2 className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
@@ -87,14 +88,14 @@ export function RegisterForm() {
             placeholder="Your Shop Name"
             value={shopName}
             onChange={(e) => setShopName(e.target.value)}
-            className="pl-10"
+            className="pl-10 h-9 text-sm"
             required
           />
         </div>
       </div>
       
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+      <div className="space-y-1">
+        <Label htmlFor="email" className="text-sm">Email</Label>
         <div className="relative">
           <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
@@ -103,14 +104,14 @@ export function RegisterForm() {
             type="email" 
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="pl-10"
+            className="pl-10 h-9 text-sm"
             required
           />
         </div>
       </div>
       
-      <div className="space-y-2">
-        <Label htmlFor="phone">Phone Number</Label>
+      <div className="space-y-1">
+        <Label htmlFor="phone" className="text-sm">Phone Number</Label>
         <div className="relative">
           <Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
@@ -119,13 +120,13 @@ export function RegisterForm() {
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="pl-10"
+            className="pl-10 h-9 text-sm"
           />
         </div>
       </div>
       
-      <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+      <div className="space-y-1">
+        <Label htmlFor="password" className="text-sm">Password</Label>
         <div className="relative">
           <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
@@ -133,7 +134,7 @@ export function RegisterForm() {
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="pl-10"
+            className="pl-10 h-9 text-sm"
             required
             minLength={6}
           />
@@ -141,20 +142,20 @@ export function RegisterForm() {
             type="button"
             variant="ghost"
             size="icon"
-            className="absolute right-1 top-1 h-7 w-7"
+            className="absolute right-1 top-1 h-6 w-6"
             onClick={() => setShowPassword(!showPassword)}
           >
             {showPassword ? (
-              <EyeOff className="h-4 w-4 text-muted-foreground" />
+              <EyeOff className="h-3 w-3 text-muted-foreground" />
             ) : (
-              <Eye className="h-4 w-4 text-muted-foreground" />
+              <Eye className="h-3 w-3 text-muted-foreground" />
             )}
           </Button>
         </div>
       </div>
       
-      <div className="space-y-2">
-        <Label htmlFor="confirmPassword">Confirm Password</Label>
+      <div className="space-y-1">
+        <Label htmlFor="confirmPassword" className="text-sm">Confirm Password</Label>
         <div className="relative">
           <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
@@ -162,7 +163,7 @@ export function RegisterForm() {
             type={showPassword ? "text" : "password"}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="pl-10"
+            className="pl-10 h-9 text-sm"
             required
             minLength={6}
           />
@@ -171,16 +172,15 @@ export function RegisterForm() {
       
       <Button 
         type="submit" 
-        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-colors font-semibold text-base py-6"
+        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-colors font-semibold text-sm py-4 mt-1"
         disabled={loading}
-        size="lg"
       >
-        {loading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+        {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         {loading ? "Registering..." : "Submit Registration"}
-        {!loading && <UserRoundPlus className="ml-2 h-5 w-5" />}
+        {!loading && <UserRoundPlus className="ml-2 h-4 w-4" />}
       </Button>
       
-      <p className="text-xs text-center text-muted-foreground mt-2">
+      <p className="text-xs text-center text-muted-foreground mt-1">
         By registering, you agree to our Terms of Service and Privacy Policy.
       </p>
     </form>
