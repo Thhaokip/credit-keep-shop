@@ -1,9 +1,9 @@
 
 import { ReactNode, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { LogOut, Menu } from "lucide-react";
+import { LogOut, Menu, Home, Settings } from "lucide-react";
 import { toast } from "sonner";
 import { Footer } from "./Footer";
 
@@ -53,10 +53,26 @@ export function DashboardLayout({ children, onSignOut }: DashboardLayoutProps) {
             <h2 className="text-lg sm:text-xl font-bold">{shopName}</h2>
           </div>
           
-          <Button variant="outline" size="sm" onClick={handleLogout}>
-            <LogOut className="mr-2 h-4 w-4" />
-            Logout
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/dashboard" className="flex items-center gap-1">
+                <Home className="h-4 w-4" />
+                <span className="hidden sm:inline">Dashboard</span>
+              </Link>
+            </Button>
+            
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/settings" className="flex items-center gap-1">
+                <Settings className="h-4 w-4" />
+                <span className="hidden sm:inline">Settings</span>
+              </Link>
+            </Button>
+            
+            <Button variant="outline" size="sm" onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              Logout
+            </Button>
+          </div>
         </div>
       </header>
       
