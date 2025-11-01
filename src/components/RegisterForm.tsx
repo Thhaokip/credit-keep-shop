@@ -7,6 +7,7 @@ import { Building2, Mail, Loader2, Lock, Eye, EyeOff, Phone, UserRoundPlus } fro
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { PaymentDialog } from "./PaymentDialog";
 
 export function RegisterForm() {
   const [shopName, setShopName] = useState("");
@@ -16,6 +17,8 @@ export function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
+  const [pendingRegistration, setPendingRegistration] = useState<any>(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,27 +57,61 @@ export function RegisterForm() {
         throw error;
       }
       
-      toast.success("Registration successful! You can now login with your credentials.");
+      // Show payment dialog for new registration
+      setPendingRegistration({ user: data.user, session: data.session });
+      setShowPaymentDialog(true);
       
-      // Check if email verification is required
-      if (data?.user && data.session) {
-        // If session exists, user is already logged in (email verification not required)
-        toast.success("Registration complete! Redirecting to dashboard...");
-        setTimeout(() => navigate('/dashboard'), 1500);
-      } else {
-        // Clear the form
-        setShopName("");
-        setEmail("");
-        setPhone("");
-        setPassword("");
-        setConfirmPassword("");
-      }
     } catch (error: any) {
       console.error("Registration failed", error);
       toast.error(error.message || "Registration failed. Please try again.");
-    } finally {
       setLoading(false);
     }
+  };
+
+  const handlePaymentSuccess = async () => {
+    try {
+      setShowPaymentDialog(false);
+      
+      // Verify payment and complete registration
+      if (pendingRegistration?.user) {
+        const { data, error } = await supabase.functions.invoke('verify-payment', {
+          body: { 
+            orderId: new URLSearchParams(window.location.search).get('order_id'),
+            userId: pendingRegistration.user.id 
+          },
+        });
+
+        if (error || !data?.success) {
+          throw new Error('Payment verification failed');
+        }
+
+        toast.success("Payment successful! Registration complete.");
+        
+        // Check if user is logged in
+        if (pendingRegistration.session) {
+          setTimeout(() => navigate('/dashboard'), 1500);
+        } else {
+          // Clear form
+          setShopName("");
+          setEmail("");
+          setPhone("");
+          setPassword("");
+          setConfirmPassword("");
+        }
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Payment verification failed");
+    } finally {
+      setLoading(false);
+      setPendingRegistration(null);
+    }
+  };
+
+  const handlePaymentCancel = () => {
+    setShowPaymentDialog(false);
+    setLoading(false);
+    setPendingRegistration(null);
+    toast.info("Registration cancelled. Please try again.");
   };
 
   return (
@@ -183,6 +220,16 @@ export function RegisterForm() {
       <p className="text-xs text-center text-muted-foreground mt-1">
         By registering, you agree to our Terms of Service and Privacy Policy.
       </p>
+
+      {showPaymentDialog && (
+        <PaymentDialog
+          open={showPaymentDialog}
+          email={email}
+          shopName={shopName}
+          onPaymentSuccess={handlePaymentSuccess}
+          onCancel={handlePaymentCancel}
+        />
+      )}
     </form>
   );
 }
