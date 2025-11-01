@@ -54,36 +54,7 @@ export function CustomerList({
     open: false,
   });
   
-  // Load WhatsApp settings
-  useEffect(() => {
-    const loadWhatsAppSettings = async () => {
-      if (!user) return;
-      
-      try {
-        setLoadingSettings(true);
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('whatsapp_enabled, whatsapp_phone')
-          .eq('id', user.id)
-          .single();
-        
-        if (error) throw error;
-        
-        if (data) {
-          setWhatsAppSettings({
-            enabled: data.whatsapp_enabled || false,
-            phone: data.whatsapp_phone || "",
-          });
-        }
-      } catch (error) {
-        console.error('Error loading WhatsApp settings:', error);
-      } finally {
-        setLoadingSettings(false);
-      }
-    };
-    
-    loadWhatsAppSettings();
-  }, [user]);
+  // WhatsApp settings can be configured later
   
   const handleOpenCreditDialog = (
     customerId: string, 
@@ -114,34 +85,13 @@ export function CustomerList({
   };
   
   const handleWhatsAppShare = (customer: CustomerType) => {
-    // Check if WhatsApp is configured
-    if (!whatsAppSettings.enabled || !whatsAppSettings.phone) {
-      toast.error("WhatsApp is not properly configured", {
-        description: "Please set up your WhatsApp in the Settings page",
-        action: {
-          label: "Settings",
-          onClick: () => window.location.href = "/settings",
-        },
-      });
-      return;
-    }
-    
-    // Prepare the message
     const message = `Dear ${customer.name}, your current credit amount at our store is ₹${customer.amount}. Thank you for your business!`;
     const encodedMessage = encodeURIComponent(message);
     
-    // Use the user's WhatsApp business number
-    let whatsappUrl;
+    const whatsappUrl = customer.phone 
+      ? `https://wa.me/${customer.phone}?text=${encodedMessage}`
+      : `https://wa.me/?text=${encodedMessage}`;
     
-    // If customer has a phone number, send directly to them
-    if (customer.phone) {
-      whatsappUrl = `https://wa.me/${customer.phone}?text=${encodedMessage}`;
-    } else {
-      // If no customer phone, open WhatsApp with just the message composed
-      whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
-    }
-    
-    // Open WhatsApp in new tab
     window.open(whatsappUrl, "_blank");
     toast.success(`Opening WhatsApp to send message to ${customer.name}`);
   };
