@@ -49,20 +49,33 @@ export function PaymentDialog({
 
       setOrderId(data.orderId);
       
-      // Load Cashfree SDK and open payment
-      const script = document.createElement('script');
-      script.src = 'https://sdk.cashfree.com/js/v3/cashfree.js';
-      script.async = true;
-      script.onload = () => {
-        // @ts-ignore
-        const cashfree = window.Cashfree({ mode: 'production' });
-        
-        cashfree.checkout({
-          paymentSessionId: data.paymentSessionId,
-          returnUrl: `${window.location.origin}/?payment=success&order_id=${data.orderId}`,
+      // Load Cashfree SDK (ensure single instance) and open payment
+      const loadCashfree = () =>
+        new Promise<void>((resolve, reject) => {
+          if (document.getElementById('cashfree-sdk')) return resolve();
+          const s = document.createElement('script');
+          s.id = 'cashfree-sdk';
+          s.src = 'https://sdk.cashfree.com/js/v3/cashfree.js';
+          s.async = true;
+          s.onload = () => resolve();
+          s.onerror = () => reject(new Error('Failed to load Cashfree SDK'));
+          document.body.appendChild(s);
         });
-      };
-      document.body.appendChild(script);
+
+      await loadCashfree();
+
+      // @ts-ignore
+      const cashfree = await (window as any).Cashfree({ mode: 'production' });
+      try {
+        // @ts-ignore
+        const v = cashfree?.version?.();
+        console.log('Cashfree SDK loaded (production). Version:', v);
+      } catch {}
+
+      await cashfree.checkout({
+        paymentSessionId: data.paymentSessionId,
+        returnUrl: `${window.location.origin}/?payment=success&order_id=${data.orderId}`,
+      });
       
     } catch (error: any) {
       console.error('Payment initiation error:', error);
