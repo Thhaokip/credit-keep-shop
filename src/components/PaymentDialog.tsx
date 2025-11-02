@@ -48,7 +48,7 @@ export function PaymentDialog({
       script.async = true;
       script.onload = () => {
         // @ts-ignore
-        const cashfree = window.Cashfree({ mode: 'sandbox' });
+        const cashfree = window.Cashfree({ mode: 'production' });
         
         cashfree.checkout({
           paymentSessionId: data.paymentSessionId,
