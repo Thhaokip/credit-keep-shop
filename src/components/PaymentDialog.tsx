@@ -74,7 +74,7 @@ export function PaymentDialog({
 
       await cashfree.checkout({
         paymentSessionId: data.paymentSessionId,
-        returnUrl: `${window.location.origin}/?payment=success&order_id=${data.orderId}`,
+        // Do not override returnUrl; use the one set during order creation to respect Cashfree origin/domain checks
       });
       
     } catch (error: any) {
