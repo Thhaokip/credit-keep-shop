@@ -51,6 +51,9 @@ serve(async (req) => {
 
     const cashfreeData = await cashfreeResponse.json()
     
+    console.log('Cashfree API Response:', JSON.stringify(cashfreeData, null, 2))
+    console.log('Response Status:', cashfreeResponse.status)
+    
     if (!cashfreeResponse.ok) {
       console.error('Cashfree error:', cashfreeData)
       throw new Error(cashfreeData.message || 'Failed to create payment order')

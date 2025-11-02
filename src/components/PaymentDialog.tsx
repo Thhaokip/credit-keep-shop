@@ -38,7 +38,14 @@ export function PaymentDialog({
         body: { email, shopName },
       });
 
+      console.log('Payment order response:', data);
+      console.log('Payment order error:', error);
+
       if (error) throw error;
+
+      if (!data?.paymentSessionId) {
+        throw new Error('Payment session ID not received from server');
+      }
 
       setOrderId(data.orderId);
       
