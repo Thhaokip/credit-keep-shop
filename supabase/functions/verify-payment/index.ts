@@ -22,7 +22,7 @@ serve(async (req) => {
     }
 
     // Verify payment with Cashfree
-    const cashfreeResponse = await fetch(`https://sandbox.cashfree.com/pg/orders/${orderId}`, {
+    const cashfreeResponse = await fetch(`https://api.cashfree.com/pg/orders/${orderId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

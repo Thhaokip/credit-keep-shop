@@ -25,7 +25,7 @@ serve(async (req) => {
     const orderId = `ORDER_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     
     // Create Cashfree order
-    const cashfreeResponse = await fetch('https://sandbox.cashfree.com/pg/orders', {
+    const cashfreeResponse = await fetch('https://api.cashfree.com/pg/orders', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
