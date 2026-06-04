@@ -41,7 +41,21 @@ export function PaymentDialog({
       console.log('Payment order response:', data);
       console.log('Payment order error:', error);
 
-      if (error) throw error;
+      if (error) {
+        let message = error.message || 'Failed to create payment order';
+        const context = (error as any).context;
+
+        if (context && typeof context.json === 'function') {
+          try {
+            const payload = await context.json();
+            message = payload?.error || payload?.message || message;
+          } catch {
+            // Keep the original Supabase error message if the response body is not JSON.
+          }
+        }
+
+        throw new Error(message);
+      }
 
       if (!data?.paymentSessionId) {
         throw new Error('Payment session ID not received from server');
